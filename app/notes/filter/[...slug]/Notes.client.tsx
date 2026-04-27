@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../../../lib/api";
 import NoteList from "../../../../components/NoteList/NoteList";
@@ -18,11 +18,20 @@ interface NotesClientProps {
 export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["notes", page, search, tag],
-    queryFn: () => fetchNotes({ page, perPage: 12, search, tag }),
+    queryKey: ["notes", page, debouncedSearch, tag],
+    queryFn: () => fetchNotes({ page, perPage: 12, search: debouncedSearch, tag }),
   });
 
   return (
@@ -30,10 +39,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
       <div className={css.toolbar}>
         <SearchBox
           value={search}
-          onChange={(v) => {
-            setSearch(v);
-            setPage(1);
-          }}
+          onChange={(v) => setSearch(v)}
         />
         <button className={css.addButton} onClick={() => setIsModalOpen(true)}>
           Add note +
