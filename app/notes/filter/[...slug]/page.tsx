@@ -7,12 +7,13 @@ import { fetchNotes } from "../../../../lib/api";
 import NotesClient from "../../Notes.client";
 import type { NoteTag } from "../../../../types/note";
 
+// стало
 interface FilterPageProps {
-  params: Promise<{ tag?: string[] }>;
+  params: Promise<{ slug?: string[] }>;
 }
 
 export default async function FilterPage({ params }: FilterPageProps) {
-  const { tag: tagSegments } = await params;
+  const { slug: tagSegments } = await params;
   const tagValue = tagSegments?.[0];
   const tag =
     tagValue && tagValue !== "all" ? (tagValue as NoteTag) : undefined;

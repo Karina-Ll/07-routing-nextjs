@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNoteById } from "../../../../../lib/api";
-import Modal from "../../../../../components/Modal/Modal";
-import NotePreview from "../../../../../components/NotePreview/NotePreview";
+import { fetchNoteById } from "../../../../lib/api";
+import Modal from "../../../../components/Modal/Modal";
+import NotePreview from "../../../../components/NotePreview/NotePreview";
 
 interface InterceptedNotePageProps {
   params: { id: string };
