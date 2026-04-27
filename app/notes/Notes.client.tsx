@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { fetchNotes } from "../../lib/api";
 import NoteList from "../../components/NoteList/NoteList";
 import Pagination from "../../components/Pagination/Pagination";
@@ -20,16 +19,11 @@ export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["notes", page, search, tag],
     queryFn: () => fetchNotes({ page, perPage: 12, search, tag }),
   });
-
-  const handleNoteClick = (id: string) => {
-    router.push(`/notes/${id}`);
-  };
 
   return (
     <div className={css.container}>
@@ -51,7 +45,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
 
       {data && (
         <>
-          <NoteList notes={data.notes} onNoteClick={handleNoteClick} />
+          <NoteList notes={data.notes} />
           {data.totalPages > 1 && (
             <Pagination
               currentPage={page}
@@ -64,7 +58,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm onClose={() => setIsModalOpen(false)} />
+          <NoteForm onCancel={() => setIsModalOpen(false)} />
         </Modal>
       )}
     </div>
